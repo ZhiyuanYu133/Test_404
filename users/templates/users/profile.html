@@ -1,0 +1,70 @@
+{% extends "stream/base-no-side-bar.html" %}
+{% load static %}
+
+{% load crispy_forms_tags %}
+{% block content %}
+    
+    
+
+    <div class="content-section">
+        <div class="media">
+            <img class="rounded-circle account-img" src="{{ user.profile.profileImage.url}}">
+            <div class="media-body">
+                <!-- <h2 class="account-heading"> {{ user.username}}'s Profile </h2> -->
+                <h2 class="account-heading"> {{ author.displayName }}'s Profile </h2>
+                
+                <div class="d-flex justify-content-end">
+                <a href="{% url 'update' %}">
+                    <button type="button" class="btn btn-outline-primary  mx-2" data-mdb-ripple-color="dark">
+                        Edit Profile
+                    </button>
+                </a>
+
+                <a href="{% url 'followers' %}">
+                    <button type="button" class="btn btn-outline-primary mx-2" data-mdb-ripple-color="dark">
+                        <i class="fas fa-users"></i>
+                        Followers
+                    </button>
+                </a>
+
+                <a href="{% url 'following' %}">
+                    <button type="button" class="btn btn-outline-primary mx-2" data-mdb-ripple-color="dark">
+                        <i class="fas fa-users"></i>
+                        Following
+                    </button>
+                </a>
+
+                <a href="{% url 'truefriends' %}">
+                    <button type="button" class="btn btn-outline-primary mx-2" data-mdb-ripple-color="dark">
+                        <i class="fas fa-users"></i>
+                        True Friends
+                    </button>
+                </a>
+
+                
+                <!-- <form method="POST" action="{% url 'inbox' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="type" value="follow">
+                    <input type="hidden" name="profile_id" value="{{author.id}}">
+                    <button type="submit" class="btn btn-primary mx-2">
+                        <i class="fas fa-user-plus"></i>
+                        Follow
+                    </button>
+                </form>  -->
+                </div>
+            </div>
+        </div>
+        {% if user.profile.posts%}
+            {%for post in user.profile.posts %}
+                <div class="alert alert-dark" role="alert">
+                    {% if user.profile.post.image %}
+                        <img src="{{user.profile.post.image.url}}" class="post-image"/>
+                    {%else%}
+                        {{user.profile.post}}
+        {% endif %}
+
+            </div><br/><br/>
+            {%endfor%}
+    {%endif%}
+    </div>
+{% endblock content %}

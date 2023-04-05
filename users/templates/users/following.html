@@ -1,0 +1,17 @@
+{% extends "stream/base-no-side-bar.html" %}
+{% load static %}
+
+{% block content %}
+<div class="col-md-12" >
+    <div class="content-section" style="position: fixed; width: 90% !important;"> 
+    <h1>Friends List</h1>
+    <h4 class='text-muted'>List of Following you have:
+        {% for followin in following %}
+        <ul class="list-group">
+            <li class="list-group-item list-group-item-light">{{ followin.user.username }}</li>
+        </ul>
+        {% endfor %}
+    </h4>
+    </div>
+</div>
+{% endblock content %}

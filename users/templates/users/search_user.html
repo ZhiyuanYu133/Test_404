@@ -1,0 +1,56 @@
+{% extends "stream/base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <div class="content-section">
+        <form method="GET" enctype="multipart/form-data">
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">search user</legend>
+            </fieldset>
+            <div class="form-group">
+                <input type="text" name="displayName" class="textinput form-control">
+                <button class="btn btn-outline-info" type="submit">search</button>
+            </div>
+        </form>
+
+    </div>
+    <hr>
+    <table class="table table-hover mb-12 table-bordered">
+        <tr>
+            <th>displayName</th>
+            <th>host</th>
+            <th>github</th>
+            <th>profileImage</th>
+            <th>node</th>
+            <th>team</th>
+            <th>action</th>
+        </tr>
+        {% for profile in profiles %}
+            <tr>
+                <td>{{ profile.displayName }}</td>
+                <td>{{ profile.host }}</td>
+                <td>
+                    {% if profile.github %}
+                        <a href="{{ profile.github }}">{{ profile.github }}</a>
+                    {% else %}
+                        {{ profile.github }}
+                    {% endif %}
+                </td>
+                <td><img src="/static/{{ profile.profileImage }}" alt=""></td>
+                <td><a href="{{ profile.node }}">{{ profile.node }}</a></td>
+                <td>{{ profile.team }}</td>
+                <td>
+                    {% if profile.team == "A" %}
+                        <a href="" class="btn-sm btn-warning btn">other team user</a>
+                    {% elif profile.team == "C" %}
+                        <a href="" class="btn-sm btn-warning btn">other team user</a>
+                    {% else %}
+                        <a href="/request/{{ request.user.profile.id }}/friend/{{ profile.id }}"
+                           class="btn-sm btn-primary btn">add friends</a>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+
+    </table>
+{% endblock content %}

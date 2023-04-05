@@ -1,0 +1,86 @@
+{% extends "stream/base-no-side-bar.html" %}
+{% load static %}
+
+{% load crispy_forms_tags %}
+{% block content %}
+    
+    
+
+    <div class="content-section">
+        <div class="media">
+            <img class="rounded-circle account-img" src="{{ author.profileImage.url}}">
+            <div class="media-body">
+                <!-- <h2 class="account-heading"> {{ user.username}}'s Profile </h2> -->
+                <h2 class="account-heading"> {{ author.displayName }}'s Profile </h2>
+                {% if user == author %}
+                <div class="d-flex justify-content-end">
+                    <a href="{% url 'update' %}">
+                        <button type="button" class="btn btn-outline-primary mx-2" data-mdb-ripple-color="dark">
+                            Edit Profile
+                        </button>
+                    </a>
+
+                    <a href="{% url 'followers' %}">
+                        <button type="button" class="btn btn-outline-primary mx-2" data-mdb-ripple-color="dark">
+                            <i class="fas fa-users"></i>
+                            Followers
+                        </button>
+                    </a>
+                </div>
+                {% endif %}
+
+                <form method="POST" action="{% url 'inbox' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="type" value="follow">
+                    <input type="hidden" name="profile_id" value="{{author.id}}">
+                    <button type="submit" class="btn btn-primary mx-2">
+                        <i class="fas fa-user-plus"></i>
+                        Follow
+                    </button>
+                    <script>
+                        $(document).ready(function() {
+                            // Handle the click event of the "Follow" button
+                            $('.follow-button').click(function() {
+                                var profileId = $(this).data('profile-id');
+                                var csrfToken = $('input[name=csrfmiddlewaretoken]').val(); // Get the CSRF token from the form
+                                var requestData = {
+                                    'type': 'follow',
+                                    'profile_id': profileId,
+                                    'csrfmiddlewaretoken': csrfToken,
+                                };
+                        
+                                // Send an AJAX request to the server
+                                $.ajax({
+                                    url: '{% url "inbox" %}',
+                                    type: 'POST',
+                                    data: requestData,
+                                    success: function(response) {
+                                        // Handle the response from the server
+                                        console.log(response);
+                                    },
+                                    error: function(xhr, status, error) {
+                                        // Handle the error
+                                        console.error(xhr.responseText);
+                                    }
+                                });
+                            });
+                        });
+                        </script>
+                </form> 
+                </div>
+            </div>
+        </div>
+        {% if user.profile.posts%}
+            {%for post in user.profile.posts %}
+                <div class="alert alert-dark" role="alert">
+                    {% if user.profile.post.image %}
+                        <img src="{{user.profile.post.image.url}}" class="post-image"/>
+                    {%else%}
+                        {{user.profile.post}}
+        {% endif %}
+
+            </div><br/><br/>
+            {%endfor%}
+    {%endif%}
+    </div>
+{% endblock content %}

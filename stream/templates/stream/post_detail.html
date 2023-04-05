@@ -1,0 +1,62 @@
+{% extends "stream/base.html" %}
+{% load md2 %}
+{% block content %}
+<div class="card mb-3" style="box-shadow: 3px 3px 5px rgba(0,0,0,0.30);">
+    <!-- Profile image, Name, Date Posted -->
+   <div class="card-header" style="height: 80px; display: flex;">
+    <img class="rounded-circle article-img" style="width: 55px; height: 55px; margin-top: -4px; margin-left: 0px;" src="{{ post.author.profileImage.url }}">
+    <div style="display: flex; flex-direction: column; padding-top: -2px;">
+    <a class="mr-3" style="text-decoration: none; font-size: 17px;" href="#">{{ post.author }}</a>
+    <a class="mr-3" href="{% url 'post-detail' pk=post.id %}" style="text-decoration: none; color: grey; font-size: 13px">{{ post.published|timesince }} ago</a>
+    </div>
+   </div>
+    <!-- Title and Description -->
+   <div class="card-body">
+      <h4 class="card-title">
+        <div style="display: flex; justify-content: space-between;">
+        <a href="{% url 'post-detail' pk=post.id %}" style="text-decoration: none; color:black; ">{{ post.title }}</a>
+        <div style="margin-left: auto;">
+            {% if object.author == user.profile %}
+                <a class = "btn btn-secondary btn-sm mt-1 mb-1" href="{% url "post-update" object.id %}">Edit ✏️</a>
+                <a class = "btn btn-danger btn-sm mt-1 mb-1" href="{% url "post-delete" object.id %}">Delete 🗑️</a>
+            {% endif %}
+        </div>
+    </div>
+    </h4>
+      <h6 class="card-subtitle text-muted">{{ post.description }}</h6>
+   </div>
+   <!-- Textual Content -->
+   <div class="card-body" style="margin-top: -25px">
+      <p class="card-text" style='text-align: justify;'>{{ post.content|markdown }}</p>
+   </div>
+    <!-- Image (if there is) -->
+    {% if post.image %}
+      <img style="margin: auto; width: 80%;" src="{{post.image.url}}" class="post-image" width="60%" height="60%"/><br>
+    {% endif %}
+
+    
+
+   <!-- Comments -->
+   {% if post.comments %}
+   <ul class="list-group list-group-flush">
+        {% for comment in post.comments.all %}
+
+            <li class="list-group-item">
+                <div style="display: flex; flex-direction: row; margin-top: -6px; margin-bottom: -6px;">
+                <img class="rounded-circle article-img" style="width: 45px; height: 45px; ;" src="{{ comment.author.profileImage.url }}">
+                <div style="display: flex; flex-direction: column; padding-top: -2px;">
+                <a class="mr-3" style="display: flex; text-decoration: none; font-size: 15px;" href="#">{{ comment.author }}</a>
+                <div style="font-size: 15px">{{comment.comment}}</div>
+                </div>
+                <p style="margin-left: auto; color: grey; font-size: 11px">{{comment.published|timesince}} ago</p>
+            </div>
+            </li>
+
+        {% endfor%}
+   </ul>
+   {% endif %}
+   <div class="card-footer text-muted" style="text-align: center;">
+    <a style="text-decorator" href="{%url 'post-comments' post.id%}">Comment</a>
+   </div>
+</div>
+{% endblock content %}

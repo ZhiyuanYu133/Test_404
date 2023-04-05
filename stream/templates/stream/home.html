@@ -1,0 +1,94 @@
+{% extends "stream/base.html" %}
+{% load md2 %}
+{% block content %}
+    {% for post in posts %}
+        <div class="card mb-3" style="box-shadow: 3px 3px 5px rgba(0,0,0,0.30);">
+            <!-- Profile image, Name, Date Posted -->
+            <div class="card-header" style="height: 80px; display: flex;">
+                {% if post.author.profileImage.url %}
+                    <img class="rounded-circle article-img"
+                         style="width: 55px; height: 55px; margin-top: -4px; margin-left: 0px;"
+                         src="{{ post.author.profileImage.url }}">
+                {% endif %}
+                <div style="display: flex; flex-direction: column; padding-top: -2px;">
+                    {#                    <!-- <a class="mr-3" style="text-decoration: none; font-size: 17px;" href="{% url "profile" post.author.id %}">{{ post.author }}</a> -->#}
+                    {#                    <!-- <a class="mr-3" style="text-decoration: none; font-size: 17px;" href="{% url "profile" post.author.id %}">{{ post.author }}</a> -->#}
+                    {#                    <!-- <a class="mr-3" style="text-decoration: none; font-size: 17px;" href="{% url 'profile' post.author.id %}">{{ post.author }}</a> -->#}
+                    {% if post.team == "A" %}
+                        <a class="mr-3" style="text-decoration: none; font-size: 17px;"
+                           href="{{ post.author.id }}">{{ post.author.displayName }}
+                        </a>
+                        <a class="mr-3" href="{{ post.id }}"
+                           style="text-decoration: none; color: grey; font-size: 13px">
+                            {{ post.published }}
+                        </a>
+
+                    {% else %}
+                        <a class="mr-3" style="text-decoration: none; font-size: 17px;"
+                           href="{% url "user_profile" post.author.id %}">{{ post.author.displayName }}
+                        </a>
+                        <a class="mr-3" href="{% url 'post-detail' pk=post.id %}"
+                           style="text-decoration: none; color: grey; font-size: 13px">
+                            {{ post.published|timesince }}ago
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+            <!-- Title and Description -->
+            <div class="card-body">
+                <h4 class="card-title">
+                    {% if post.team == "A" %}
+                        <a href="{{ post.author.id }}"
+                           style="text-decoration: none; color:black;">{{ post.title }}</a>
+                    {% else %}
+                        <a href="{% url 'post-detail' pk=post.id %}"
+                           style="text-decoration: none; color:black;">{{ post.title }}</a>
+                    {% endif %}
+
+                </h4>
+                <h6 style="margin-top: 14px;" class="card-subtitle text-muted">{{ post.description }}</h6>
+            </div>
+            <!-- Textual Content -->
+            {% if post.content %}
+                <div class="card-body" style="margin-top: -25px">
+                    <p class="card-text" style='text-align: justify;'>{{ post.content|markdown }}</p>
+                </div>
+            {% endif %}
+
+            <!-- Image (if there is) -->
+            {% if post.image %}
+                <img style="margin: auto; width: 80%;" src="{{ post.image }}" class="post-image" width="60%"
+                     height="60%"/><br>
+            {% endif %}
+
+            <!-- Comments -->
+            {% if post.comments %}
+                <ul class="list-group list-group-flush">
+                    {% for comment in post.comments.all|slice:":2" %}
+                        <li class="list-group-item">
+                            <div style="display: flex; flex-direction: row; margin-top: -6px; margin-bottom: -6px;">
+                                <img class="rounded-circle article-img" style="width: 45px; height: 45px; ;"
+                                     src="{{ comment.author.profileImage.url }}">
+                                <div style="display: flex; flex-direction: column; padding-top: -2px;">
+                                    <a class="mr-3" style="display: flex; text-decoration: none; font-size: 15px;"
+                                       href="{% url "user_profile" comment.author.id %}">{{ comment.author }}</a>
+                                    <div style="font-size: 15px">{{ comment.comment }}</div>
+                                </div>
+                                <p style="margin-left: auto; color: grey; font-size: 11px">{{ comment.published|timesince }}
+                                    ago</p>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            {% if post.team == "A" %}
+            {% else %}
+                <div class="card-footer text-muted" style="text-align: center;">
+                    <a style="" href="{% url 'post-comments' post.id %}">Comment</a>
+                </div>
+            {% endif %}
+
+        </div>
+
+    {% endfor %}
+{% endblock content %}
